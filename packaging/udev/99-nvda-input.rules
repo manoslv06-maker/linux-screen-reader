@@ -1,0 +1,19 @@
+# Regras udev do nvda-linux.
+#
+# Instalação: sudo install -m 644 99-nvda-input.rules /etc/udev/rules.d/
+#             sudo udevadm control --reload && sudo udevadm trigger
+#
+# O backend evdev precisa:
+#   - LER os teclados em /dev/input/event*  (captura abaixo do compositor);
+#   - ESCREVER em /dev/uinput               (teclado virtual que repassa as
+#                                            teclas que o leitor não usa).
+#
+# Opção A (padrão): grupo "input". Depois: sudo usermod -aG input $USER
+# e entre de novo na sessão.
+SUBSYSTEM=="input", KERNEL=="event*", GROUP="input", MODE="0660"
+KERNEL=="uinput", SUBSYSTEM=="misc", GROUP="input", MODE="0660", OPTIONS+="static_node=uinput"
+
+# Opção B (sem grupo): acesso só para o usuário da sessão ativa (logind).
+# Comente as duas linhas acima e descomente as duas abaixo.
+# SUBSYSTEM=="input", KERNEL=="event*", ENV{ID_INPUT_KEYBOARD}=="1", TAG+="uaccess"
+# KERNEL=="uinput", SUBSYSTEM=="misc", TAG+="uaccess", OPTIONS+="static_node=uinput"

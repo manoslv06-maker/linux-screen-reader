@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nvda-linux"
+version = "0.1.0.dev0"
+description = "Leitor de tela para Linux com a ergonomia do NVDA (AT-SPI2, evdev, Speech Dispatcher, BrlAPI)"
+requires-python = ">=3.11"
+license = { text = "GPL-2.0-or-later" }
+dependencies = [
+  "PyGObject>=3.50",
+  "evdev>=1.7",
+  "dbus-next>=0.2.3",
+  "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+audio = ["sounddevice>=0.4"]
+dev = ["pytest>=8", "pytest-asyncio>=0.23", "mypy>=1.10", "ruff>=0.5"]
+# speechd, brlapi e louis vêm dos pacotes da distribuição (python3-speechd, python3-brlapi, python3-louis)
+
+[project.scripts]
+nvda-linux = "nvda_linux.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+pythonpath = ["src"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+mypy_path = "src"
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

@@ -1,0 +1,36 @@
+# Unidade systemd --user do nvda-linux.
+#
+# Instalação (sistema):   /usr/lib/systemd/user/nvda-linux.service
+# Instalação (usuário):   ~/.config/systemd/user/nvda-linux.service
+# Ativar:                 systemctl --user enable --now nvda-linux.service
+#
+# Use a unidade OU o autostart (.desktop), não os dois. Se ambos estiverem
+# ativos, a trava de instância única faz a segunda cópia sair com código 2.
+
+[Unit]
+Description=nvda-linux - leitor de tela com a ergonomia do NVDA
+Documentation=https://github.com/manoslv06-maker/linux-screen-reader
+PartOf=graphical-session.target
+After=graphical-session.target
+Wants=speech-dispatcher.socket
+After=speech-dispatcher.socket
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/nvda-linux
+# Aplicativos iniciados por esta unidade (e pelo próprio leitor) expõem AT-SPI2.
+Environment=GTK_MODULES=gail:atk-bridge
+Environment=QT_ACCESSIBILITY=1
+Environment=QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1
+Environment=ACCESSIBILITY_ENABLED=1
+Environment=PYTHONUNBUFFERED=1
+# Código 2 = já existe outra instância: não reiniciar em laço.
+RestartPreventExitStatus=2
+Restart=on-failure
+RestartSec=2
+# O leitor precisa reagir rápido às teclas.
+Nice=-5
+TimeoutStopSec=8
+
+[Install]
+WantedBy=graphical-session.target

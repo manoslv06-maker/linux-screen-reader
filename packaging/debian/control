@@ -1,0 +1,37 @@
+Source: nvda-linux
+Section: misc
+Priority: optional
+Maintainer: manoslv06-maker <359591594+manoslv06-maker@users.noreply.github.com>
+Build-Depends: debhelper-compat (= 13),
+               dh-sequence-python3,
+               pybuild-plugin-pyproject,
+               python3-all,
+               python3-setuptools
+Standards-Version: 4.7.0
+Homepage: https://github.com/manoslv06-maker/linux-screen-reader
+Rules-Requires-Root: no
+
+Package: nvda-linux
+Architecture: all
+Depends: ${misc:Depends},
+         ${python3:Depends},
+         python3-gi (>= 3.50),
+         gir1.2-atspi-2.0,
+         gir1.2-gtk-4.0,
+         at-spi2-core,
+         python3-evdev,
+         python3-dbus-next,
+         python3-numpy,
+         speech-dispatcher,
+         speech-dispatcher-espeak-ng,
+         libxkbcommon0
+Recommends: brltty,
+            python3-brlapi,
+            python3-louis,
+            python3-speechd,
+            pipewire-bin | pulseaudio-utils
+Suggests: python3-sounddevice
+Description: leitor de tela com a ergonomia do NVDA
+ nvda-linux reproduz no Linux a ergonomia do NVDA: tecla NVDA, layouts
+ Desktop e Laptop, modos de navegação e foco, ajuda de entrada e
+ complementos, usando AT-SPI2, evdev/uinput, Speech Dispatcher e BrlAPI.

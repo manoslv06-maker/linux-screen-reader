@@ -1,0 +1,12 @@
+post_install() {
+  # A regra udev é recarregada pelo gancho do pacman do systemd; falta só o uinput.
+  modprobe uinput >/dev/null 2>&1 || true
+  echo ">>> nvda-linux instalado. Para usar:"
+  echo ">>>   1. sudo usermod -aG input \$USER   (e entre de novo na sessão)"
+  echo ">>>   2. nvda-linux --check-permissions"
+  echo ">>>   3. Teste com um acesso reserva (SSH ou outro TTY). Ctrl+Alt+Shift+Esc encerra."
+  echo ">>>   4. Para iniciar junto com a sessão: systemctl --user enable --now nvda-linux.service"
+}
+post_upgrade() {
+  modprobe uinput >/dev/null 2>&1 || true
+}

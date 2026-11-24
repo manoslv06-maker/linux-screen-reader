@@ -1,0 +1,51 @@
+# PKGBUILD do nvda-linux (Arch Linux e derivadas, como Manjaro e EndeavourOS).
+# Build: ./packaging/build-arch.sh (gera dist/*.pkg.tar.zst).
+# Maintainer: (preencher)
+pkgname=nvda-linux
+pkgver=0.1.0.dev0
+pkgrel=1
+pkgdesc="Leitor de tela para Linux com a ergonomia do NVDA (AT-SPI2, evdev, Speech Dispatcher, BrlAPI)"
+arch=('any')
+url="https://github.com/manoslv06-maker/linux-screen-reader"
+license=('GPL-2.0-or-later')
+depends=(
+  'python>=3.11'
+  'python-gobject'          # PyGObject >= 3.50 (gi.events)
+  'at-spi2-core'
+  'gtk4'
+  'python-evdev'
+  'python-dbus-next'
+  'python-numpy'
+  'speech-dispatcher'
+  'espeak-ng'
+  'libxkbcommon'
+)
+optdepends=(
+  'brltty: linhas braille (python-brlapi vem junto)'
+  'liblouis: tabelas de tradução braille (módulo louis)'
+  'python-sounddevice: áudio dos bips em processo (AUR)'
+  'piper-tts-bin: vozes neurais Piper (AUR)'
+  'pipewire-audio: pw-play para os bips'
+)
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+install=nvda-linux.install
+source=("$pkgname-$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+  install -Dm644 packaging/systemd/nvda-linux.service "$pkgdir/usr/lib/systemd/user/nvda-linux.service"
+  install -Dm644 packaging/udev/99-nvda-input.rules "$pkgdir/usr/lib/udev/rules.d/99-nvda-input.rules"
+  install -Dm644 packaging/udev/nvda-linux-uinput.conf "$pkgdir/usr/lib/modules-load.d/nvda-linux-uinput.conf"
+  install -Dm644 packaging/env/50-nvda-linux-a11y.conf "$pkgdir/usr/lib/environment.d/50-nvda-linux-a11y.conf"
+  install -Dm755 packaging/env/nvda-linux-a11y-env.sh "$pkgdir/usr/bin/nvda-linux-a11y-env"
+  # Início automático opcional: copiar para ~/.config/autostart se quiser.
+  install -Dm644 packaging/autostart/nvda-linux.desktop "$pkgdir/usr/share/nvda-linux/autostart/nvda-linux.desktop"
+  install -Dm644 docs/platform/README.md "$pkgdir/usr/share/doc/$pkgname/PLATFORM.md"
+}

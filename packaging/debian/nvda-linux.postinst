@@ -1,0 +1,22 @@
+#!/bin/sh
+# Aplica a regra udev e carrega o uinput sem precisar reiniciar.
+set -e
+
+if [ "$1" = "configure" ]; then
+    if command -v udevadm >/dev/null 2>&1; then
+        udevadm control --reload-rules || true
+        udevadm trigger --subsystem-match=input --subsystem-match=misc || true
+    fi
+    modprobe uinput 2>/dev/null || true
+    cat <<'EOF'
+nvda-linux instalado. Para usar:
+  1. sudo usermod -aG input $USER   (e entre de novo na sessão)
+  2. nvda-linux --check-permissions
+  3. Teste com um acesso reserva (SSH ou outro TTY). Ctrl+Alt+Shift+Esc encerra.
+  4. Para iniciar junto com a sessão: systemctl --user enable --now nvda-linux.service
+EOF
+fi
+
+#DEBHELPER#
+
+exit 0

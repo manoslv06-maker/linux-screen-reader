@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=NVDA para Linux
+Name[en]=NVDA for Linux
+Comment=Leitor de tela com a ergonomia do NVDA
+Comment[en]=Screen reader with NVDA ergonomics
+Exec=nvda-linux
+TryExec=nvda-linux
+Icon=preferences-desktop-accessibility
+Categories=Accessibility;Utility;
+NoDisplay=true
+Terminal=false
+X-GNOME-AutoRestart=true
+X-KDE-autostart-phase=1
