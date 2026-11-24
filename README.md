@@ -1,49 +1,51 @@
 # linux-screen-reader
 
-Leitor de tela para Linux com a ergonomia do NVDA: tecla NVDA (Insert ou Caps Lock), layouts Desktop e Laptop, modo de navegação e modo de foco na web, ajuda de entrada, `gestures.ini` e complementos. Escrito em Python 3, sobre AT-SPI2, evdev/uinput, Speech Dispatcher e BrlAPI.
+**English** · [Português](README.pt-BR.md) · [Español](README.es.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [हिन्दी](README.hi.md)
 
-O pacote e o comando se chamam `nvda-linux`. Este projeto **não é afiliado à NV Access** nem ao NVDA oficial; ele só reproduz a forma de uso, para quem já conhece o NVDA no Windows.
+A screen reader for Linux with the ergonomics of NVDA: NVDA key (Insert or Caps Lock), Desktop and Laptop layouts, browse mode and focus mode on the web, input help, `gestures.ini` and add-ons. Written in Python 3, on top of AT-SPI2, evdev/uinput, Speech Dispatcher and BrlAPI.
 
-> ⚠️ **Experimental (0.1.0.dev0).** Ainda não serve para uso diário. Funcionou num Fedora 45 com GNOME 51 numa máquina virtual, mas nunca foi usado por uma pessoa cega no dia a dia, e a voz ainda não foi ouvida numa máquina com som.
+The package and the command are called `nvda-linux`. This project is **not affiliated with NV Access** or the official NVDA; it only reproduces the way NVDA is used, for people who already know it on Windows.
 
-## O que já funciona
+> ⚠️ **Experimental (0.1.0.dev0).** Not ready for daily use yet. It worked on Fedora 45 with GNOME 51 in a virtual machine, but it has never been used day to day by a blind person, and the voice has not yet been heard on a machine with sound.
 
-Testado de verdade (Fedora 45, GNOME 51, Firefox):
+## What already works
 
-- fala pelo Speech Dispatcher, com eco de digitação (e "asterisco" em campos de senha);
-- captura do teclado por evdev/uinput, tecla NVDA, NVDA+T (título), anúncio do foco;
-- modo de navegação no Firefox: leitura da página ao carregar, H/B (próximo título/botão), setas linha a linha.
+Tested for real (Fedora 45, GNOME 51, Firefox):
 
-Coberto por testes automáticos (279), ainda sem confirmação em máquina real: "ler tudo" com o cursor acompanhando a fala, navegação rápida completa (K, F, T, D, 1–6...), tabelas, lista de elementos, braille, GUI em GTK 4, complementos.
+- speech through Speech Dispatcher, with typing echo ("asterisk" in password fields);
+- keyboard capture through evdev/uinput, NVDA key, NVDA+T (title), focus announcement;
+- browse mode in Firefox: reading the page on load, H/B (next heading/button), line-by-line arrows.
 
-## Instalar
+Covered by automated tests (279), not yet confirmed on a real machine: "say all" with the cursor following the speech, full quick navigation (K, F, T, D, 1–6...), tables, elements list, braille, GTK 4 GUI, add-ons.
 
-Precisa de PyGObject 3.50 ou mais novo: **Debian 13, Ubuntu 25.04 ou mais novo, Fedora 41+, openSUSE Tumbleweed ou Arch**. O Ubuntu 24.04 ainda não serve.
+## Install
 
-O jeito mais simples é o instalador único, que identifica a distribuição e usa apt, dnf, zypper ou pacman:
+Requires PyGObject 3.50 or newer: **Debian 13, Ubuntu 25.04 or newer, Fedora 41+, openSUSE Tumbleweed or Arch**. Ubuntu 24.04 does not work yet.
+
+The easiest way is the single installer from the [Releases](https://github.com/manoslv06-maker/linux-screen-reader/releases) page. It detects the distribution and uses apt, dnf, zypper or pacman:
 
 ```sh
-sh nvda-linux-instalador-0.1.0.dev0.run          # instala (pergunta antes de mexer no grupo input)
+sh nvda-linux-instalador-0.1.0.dev0.run          # installs (asks before changing the input group)
 sh nvda-linux-instalador-0.1.0.dev0.run --help
 sh nvda-linux-instalador-0.1.0.dev0.run --uninstall
 ```
 
-Para gerar o instalador a partir do código, veja [Gerar os pacotes](#gerar-os-pacotes).
+To build the installer from source, see [Building the packages](#building-the-packages).
 
-### Antes do primeiro teste
+### Before the first test
 
-O leitor captura o teclado inteiro. Deixe **um acesso reserva** (SSH ou outro terminal de texto) e lembre: **Ctrl+Alt+Shift+Esc** encerra o leitor e devolve o teclado.
+The reader captures the whole keyboard. Keep **a backup way in** (SSH or another text console) and remember: **Ctrl+Alt+Shift+Esc** quits the reader and gives the keyboard back.
 
 ```sh
-sudo usermod -aG input $USER      # depois saia e entre de novo na sessão
-nvda-linux --check-permissions    # diagnóstico
-nvda-linux --debug                # roda no terminal, com log detalhado
-systemctl --user enable --now nvda-linux.service   # iniciar junto com a sessão (opcional)
+sudo usermod -aG input $USER      # then log out and back in
+nvda-linux --check-permissions    # diagnostics
+nvda-linux --debug                # runs in the terminal, with a detailed log
+systemctl --user enable --now nvda-linux.service   # start with the session (optional)
 ```
 
-O log fica em `~/.local/state/nvda-linux/nvda.log`.
+The log is at `~/.local/state/nvda-linux/nvda.log`.
 
-## Desenvolvimento
+## Development
 
 ```sh
 pip install -e ".[dev,audio]"
@@ -52,27 +54,27 @@ PYTHONPATH=src python -m mypy --strict src/nvda_linux
 ruff check src tests
 ```
 
-Os testes usam objetos falsos (não precisam de AT-SPI2, áudio nem teclado). Rode no Linux: no Windows parte deles não funciona.
+The tests use fake objects (they need no AT-SPI2, audio or keyboard). Run them on Linux: on Windows part of them does not work.
 
-Documentação:
+Documentation (in Portuguese):
 
-- [docs/ROADMAP.md](docs/ROADMAP.md): fases e versões planejadas;
-- [docs/platform/README.md](docs/platform/README.md): loop, fala, teclado, braille e empacotamento;
-- [docs/semantics/README.md](docs/semantics/README.md): AT-SPI2, eventos, modo de navegação e GUI;
-- [docs/semantics/ADDONS.md](docs/semantics/ADDONS.md): complementos;
-- [CLAUDE.md](CLAUDE.md): estado atual e próximos passos.
+- [docs/ROADMAP.md](docs/ROADMAP.md): planned phases and versions;
+- [docs/platform/README.md](docs/platform/README.md): loop, speech, keyboard, braille and packaging;
+- [docs/semantics/README.md](docs/semantics/README.md): AT-SPI2, events, browse mode and GUI;
+- [docs/semantics/ADDONS.md](docs/semantics/ADDONS.md): add-ons;
+- [CLAUDE.md](CLAUDE.md): current status and next steps.
 
-### Gerar os pacotes
+### Building the packages
 
-Cada script roda na distribuição correspondente e grava em `dist/`:
+Each script runs on the matching distribution and writes to `dist/`:
 
-| Script | Gera |
+| Script | Builds |
 |---|---|
-| `packaging/build-packages.sh` | `.deb` e o código-fonte `.tar.gz` (Debian/Ubuntu) |
-| `packaging/build-rpm.sh` | `.rpm` (Fedora ou openSUSE, conforme a máquina) |
-| `packaging/build-arch.sh` | `.pkg.tar.zst` (Arch, como usuário comum) |
-| `packaging/build-installer.sh` | `nvda-linux-instalador-<versão>.run` com tudo acima |
+| `packaging/build-packages.sh` | `.deb` and the `.tar.gz` source (Debian/Ubuntu) |
+| `packaging/build-rpm.sh` | `.rpm` (Fedora or openSUSE, depending on the machine) |
+| `packaging/build-arch.sh` | `.pkg.tar.zst` (Arch, as a regular user) |
+| `packaging/build-installer.sh` | `nvda-linux-instalador-<version>.run` with all of the above |
 
-## Licença
+## License
 
 [GPL-2.0-or-later](LICENSE).
